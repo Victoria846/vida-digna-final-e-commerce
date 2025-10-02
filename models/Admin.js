@@ -24,12 +24,12 @@ class Admin extends Model {
           },
         },
         role: {
-          type: DataTypes.ENUM("admingeneral", "editor", "espectador"),
+          type: DataTypes.ENUM("superadmin", "admin", "editor"),
           defaultValue: "editor",
           validate: {
             isIn: {
-              args: [["admingeneral", "editor", "espectador"]],
-              msg: "El rol debe ser admingeneral, editor o espectador",
+              args: [["superadmin", "admin", "editor"]],
+              msg: "El rol debe ser superadmin, admin o editor",
             },
           },
         },
