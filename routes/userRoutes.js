@@ -10,7 +10,10 @@ const userController = require("../controllers/userController");
  */
 
 router.get("/", userController.index);
-router.post("/", userController.store);
+router.post("/", (req, res) => {
+  console.log("hola");
+  res.send("hola");
+});
 router.get("/:id", userController.show);
 router.patch("/:id", userController.update);
 router.delete("/:id", userController.destroy);
