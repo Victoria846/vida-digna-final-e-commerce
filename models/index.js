@@ -15,16 +15,24 @@ const sequelize = new Sequelize(
 // Requerir todos los modelos
 const User = require("./User");
 const Article = require("./Article");
-const Pedido = require("./Pedido"); // nuevo
-const ItemPedido = require("./ItemPedido"); // nuevo
+const Order = require("./Order");
+const OrderItem = require("./OrderItem");
+const Admin = require("./Admin");
+const Content = require("./Content");
 
 // Inicializar todos los modelos
 User.initModel(sequelize);
 Article.initModel(sequelize);
-Pedido.initModel(sequelize); // nuevo
-ItemPedido.initModel(sequelize); // nuevo
+Order.initModel(sequelize);
+OrderItem.initModel(sequelize);
+Admin.initModel(sequelize);
+Content.initModel(sequelize);
 
-// Establecer relaciones
+/* Pedidos <-> ItemPedido */
+Order.hasMany(OrderItem, { foreignKey: "orederId", as: "" });
+OrderItem.belongsTo(Order, { foreignKey: "orderId", as: "order" });
+
+Admin.associate({ Content });
 // Pedido.associate({ ItemPedido }); // Pedido tiene muchos items
 // ItemPedido.associate({ Pedido }); // Item pertenece a Pedido
 
@@ -43,6 +51,8 @@ module.exports = {
   sequelize,
   User,
   Article,
-  Pedido,
-  ItemPedido,
+  Order,
+  OrderItem,
+  Admin,
+  Content,
 };

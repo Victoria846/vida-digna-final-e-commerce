@@ -1,46 +1,43 @@
 const { DataTypes, Model } = require("sequelize");
 
-class ItemPedido extends Model {
+class OrderItem extends Model {
   static initModel(sequelize) {
-    ItemPedido.init(
+    OrderItem.init(
       {
         id: {
           type: DataTypes.INTEGER,
           autoIncrement: true,
           primaryKey: true,
         },
-        pedidoId: {
+        orderId: {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        productoId: {
+        itemType: {
+          type: DataTypes.ENUM("product", "service", "workshop"),
+          allowNull: false,
+        },
+        itemId: {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        cantidad: {
+        quantity: {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        precioUnitario: {
+        price: {
           type: DataTypes.FLOAT,
           allowNull: false,
         },
       },
       {
         sequelize,
-        modelName: "ItemPedido",
-        tableName: "items_pedido",
+        modelName: "OrderItem",
+        tableName: "order_items",
         timestamps: false,
       },
     );
   }
-
-  static associate(models) {
-    ItemPedido.belongsTo(models.Pedido, {
-      foreignKey: "pedidoId",
-      as: "pedido",
-    });
-  }
 }
 
-module.exports = ItemPedido;
+module.exports = OrderItem;

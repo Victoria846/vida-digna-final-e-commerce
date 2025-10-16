@@ -18,9 +18,16 @@ require("dotenv").config();
 const db = require("./models");
 
 async function createDatabaseTables() {
-  await db.sequelize.sync({ force: true });
-  console.log("[Database] ¡Las tablas fueron creadas!");
-  process.exit();
+  await db.sequelize
+    .sync({ force: true })
+    .then(() => {
+      console.log("Las tablas fueron creadas");
+      process.exit(0);
+    })
+    .catch((err) => {
+      console.error("Error al crear las tablas:", err);
+      process.exit(1);
+    });
 }
 
 createDatabaseTables();

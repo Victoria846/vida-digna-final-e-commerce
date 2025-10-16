@@ -1,46 +1,39 @@
 const { DataTypes, Model } = require("sequelize");
 
-class Pedido extends Model {
+class Order extends Model {
   static initModel(sequelize) {
-    Pedido.init(
+    Order.init(
       {
         id: {
           type: DataTypes.INTEGER,
           autoIncrement: true,
           primaryKey: true,
         },
-        usuarioId: {
+        userId: {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        fecha: {
+        date: {
           type: DataTypes.DATE,
           defaultValue: DataTypes.NOW,
         },
-        estado: {
-          type: DataTypes.STRING,
-          defaultValue: "pendiente",
+        status: {
+          type: DataTypes.ENUM("pending", "completed", "canceled"),
+          defaultValue: "pending",
         },
-        total: {
+        totalAmount: {
           type: DataTypes.FLOAT,
           defaultValue: 0.0,
         },
       },
       {
         sequelize,
-        modelName: "Pedido",
-        tableName: "pedidos",
+        modelName: "Order",
+        tableName: "orders",
         timestamps: false,
       },
     );
   }
-
-  static associate(models) {
-    Pedido.hasMany(models.ItemPedido, {
-      foreignKey: "pedidoId",
-      as: "items",
-    });
-  }
 }
 
-module.exports = Pedido;
+module.exports = Order;
