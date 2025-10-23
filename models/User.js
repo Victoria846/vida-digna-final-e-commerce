@@ -15,10 +15,23 @@ class User extends Model {
         lastname: {
           type: DataTypes.STRING,
         },
+        email: {
+          type: DataTypes.STRING,
+        },
+        address: {
+          type: DataTypes.STRING,
+        },
+        phone: {
+          type: DataTypes.STRING,
+        },
+        password: {
+          type: DataTypes.STRING,
+        },
       },
       {
         sequelize,
         modelName: "user", // Nombre del modelo en singular y en minúscula.
+        tableName: "users",
       },
     );
     return User;
