@@ -1,38 +1,50 @@
-/*
- * Este archivo se encarga de importar todos los seeders que se hayan definido
- * en el sistema y ejectuarlos.
- *
- * Para ejecutar este archivo se debe correr el comando:
- *
- * 👉 node seeders/runAllSeeders.js
- *
- *
- * Como alternativa, en el artchivo package.json se creó un comando "alias"
- * para que la ejecución sea un poco más corta:
- *
- * 👉 npm run seeders
- */
+// src/seeders/runAllSeeders.js
+const { Sequelize } = require("sequelize");
+const initModels = require("../models");
 
-require("dotenv").config();
+const { seedUsers } = require("./User/userSeeder");
+const { seedStore } = require("./Store/storeSeeder");
+const { seedServices } = require("./Service/serviceSeeder");
+const { seedSubscriptions } = require("./Subscription/subscriptionSeeder");
+const { seedContent } = require("./Content/contentSeeder");
 
 async function runAllSeeders() {
-  await require("./userSeeder")();
-  await require("./articleSeeder")();
+  // 👉 Ajustá esto a tu config real (o importá tu instancia de sequelize)
+  const sequelize = new Sequelize(
+    process.env.DB_NAME || "eco_project",
+    process.env.DB_USER || "root",
+    process.env.DB_PASSWORD || "",
+    {
+      host: process.env.DB_HOST || "localhost",
+      dialect: "mysql",
+      logging: false,
+    },
+  );
 
-  /*
-   * Aquí se pueden ejectuar otros seeders que hayan en el sistema.
-   * Por ejemplo, si se tuviesen seeders para los estudiantes
-   * habría que ejectuar:
-   *
-   * await require("./studentSeeder")();
-   *
-   * IMPORTANTE: tener en cuenta que el orden en que se ejecutan los seeders
-   * suele ser clave. Por ejemplo, antes de crear artículos habría que
-   * crear los usuarios, ya que cada artículo debe tener un autor.
-   */
+  try {
+    const models = initModels(sequelize);
 
-  console.log("[Database] ¡Los datos de prueba fueron insertados!");
-  process.exit();
+    console.log("Sincronizando modelos...");
+    await sequelize.sync({ alter: true }); // o { force: true } en desarrollo inicial
+
+    console.log("Ejecutando seeders...");
+
+    await seedUsers(models);
+    await seedStore(models);
+    await seedServices(models);
+    await seedSubscriptions(models);
+    await seedContent(models);
+
+    console.log("✅ Todos los seeders se ejecutaron correctamente.");
+  } catch (error) {
+    console.error("❌ Error ejecutando seeders:", error);
+  } finally {
+    await sequelize.close();
+  }
 }
 
-runAllSeeders();
+if (require.main === module) {
+  runAllSeeders();
+}
+
+module.exports = { runAllSeeders };

@@ -1,3 +1,4 @@
+// src/models/User/Admin.js
 const { Model, DataTypes } = require("sequelize");
 
 class Admin extends Model {
@@ -11,21 +12,30 @@ class Admin extends Model {
         },
         firstname: {
           type: DataTypes.STRING,
+          allowNull: false,
           validate: {
             notEmpty: { msg: "El nombre no puede estar vacío" },
-            len: { args: [2, 50], msg: "El nombre debe tener entre 2 y 50 caracteres" },
+            len: {
+              args: [2, 50],
+              msg: "El nombre debe tener entre 2 y 50 caracteres",
+            },
           },
         },
         lastname: {
           type: DataTypes.STRING,
+          allowNull: false,
           validate: {
             notEmpty: { msg: "El apellido no puede estar vacío" },
-            len: { args: [2, 50], msg: "El apellido debe tener entre 2 y 50 caracteres" },
+            len: {
+              args: [2, 50],
+              msg: "El apellido debe tener entre 2 y 50 caracteres",
+            },
           },
         },
         role: {
           type: DataTypes.ENUM("superadmin", "admin", "editor"),
           defaultValue: "editor",
+          allowNull: false,
           validate: {
             isIn: {
               args: [["superadmin", "admin", "editor"]],
@@ -35,26 +45,38 @@ class Admin extends Model {
         },
         email: {
           type: DataTypes.STRING,
+          allowNull: false,
           unique: { msg: "El email ya está en uso" },
           validate: {
             notEmpty: { msg: "El email no puede estar vacío" },
             isEmail: { msg: "Formato de email inválido" },
-            len: { args: [5, 255], msg: "El email debe tener entre 5 y 255 caracteres" },
+            len: {
+              args: [5, 255],
+              msg: "El email debe tener entre 5 y 255 caracteres",
+            },
           },
-          password: {
-            type: DataTypes.STRING,
-            validate: {
-              notEmpty: { msg: "La contraseña no puede estar vacía" },
-              len: { args: [8, 100], msg: "La contraseña debe tener entre 8 y 100 caracteres" },
+        },
+        password: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            notEmpty: { msg: "La contraseña no puede estar vacía" },
+            len: {
+              args: [8, 100],
+              msg: "La contraseña debe tener entre 8 y 100 caracteres",
             },
           },
         },
       },
       {
         sequelize,
-        modelName: "admin",
+        modelName: "Admin",
+        tableName: "admins",
+        timestamps: true,
+        underscored: true,
       },
     );
+
     return Admin;
   }
 }

@@ -1,20 +1,23 @@
-/*
- * No hay una única forma de organizar las rutas de un sitio web.
- * Una alternativa podría ser organizar las rutas por recurso (o entidad):
- */
+// src/routes/index.js
+const express = require("express");
 
-const userRoutes = require("./userRoutes");
+const storeRoutes = require("./store.routes");
+const servicesRoutes = require("./services.routes");
+const subscriptionsRoutes = require("./subscriptions.routes");
+const contentRoutes = require("./content.routes");
+const usersRoutes = require("./users.routes");
 
-module.exports = (app) => {
-  /*
-   * Al construir una API REST, la convención es que las rutas relativas a
-   * un recurso (o entidad) tengan como prefijo el nombre de dicho recurso
-   * en inglés y en plural.
-   *
-   * Ejemplo:
-   * Las rutas relativas a los usuarios se agrupan bajo la URL `/users`
-   * (en inglés y en plural). Del mismo modo, las rutas relativas a los artículos
-   * se deberían agrupar bajo la URL `/articles` (en inglés y en plural).
-   */
-  app.use("/users", userRoutes);
-};
+function registerRoutes(app) {
+  const api = express.Router();
+
+  // Rutas públicas y protegidas agrupadas bajo /api
+  api.use("/store", storeRoutes); // /api/store/...
+  api.use("/services", servicesRoutes); // /api/services/...
+  api.use("/subscriptions", subscriptionsRoutes); // /api/subscriptions/...
+  api.use("/content", contentRoutes); // /api/content/...
+  api.use("/users", usersRoutes); // /api/users/...
+
+  app.use("/api", api);
+}
+
+module.exports = registerRoutes;
