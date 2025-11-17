@@ -58,7 +58,6 @@ const usersController = {
   },
 
   // POST /api/users/auth/login
-  // POST /api/users/auth/login
   async login(req, res) {
     try {
       const models = req.app.get("models");
@@ -82,11 +81,28 @@ const usersController = {
         return res.status(401).json({ message: "Credenciales incorrectas" });
       }
 
-      // 👇 usar helper generateToken
+      // DEBUG: ver qué rol hay en la DB
+      console.log("[login] role en DB:", user.role);
+
+      // Rol efectivo
+      let role = user.role;
+
+      // Si no hay rol en la DB, forzamos uno
+      if (!role) {
+        if (user.email === "admin@example.com") {
+          role = "admin";
+        } else {
+          role = "client";
+        }
+      }
+
+      console.log("[login] role final que va al token:", role);
+
+      // Firmamos el token con el rol ya corregido
       const token = generateToken({
         id: user.id,
         email: user.email,
-        role: user.role,
+        role,
       });
 
       res.json({
@@ -97,7 +113,7 @@ const usersController = {
           firstname: user.firstname,
           lastname: user.lastname,
           email: user.email,
-          role: user.role,
+          role,
         },
       });
     } catch (error) {

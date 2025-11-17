@@ -1,9 +1,8 @@
+// middlewares/auth.js (o donde lo tengas)
 const { verifyToken } = require("../helpers/jwt");
 
 function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization || "";
-
-  // Esperamos "Authorization: Bearer <token>"
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
 
   if (!token) {
@@ -16,7 +15,6 @@ function authMiddleware(req, res, next) {
     return res.status(401).json({ message: "Token inválido o expirado" });
   }
 
-  // Lo que guardamos en el token lo usamos acá
   req.user = {
     id: decoded.id,
     email: decoded.email,
@@ -31,7 +29,8 @@ function adminMiddleware(req, res, next) {
     return res.status(401).json({ message: "No autenticado" });
   }
 
-  if (req.user.role !== "admin" && req.user.role !== "superadmin") {
+  // 👈 Solo dejamos admin (porque el modelo no acepta superadmin)
+  if (req.user.role !== "admin") {
     return res.status(403).json({ message: "Acceso denegado" });
   }
 
