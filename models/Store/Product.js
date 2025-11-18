@@ -49,8 +49,18 @@ class Product extends Model {
           type: DataTypes.STRING,
           allowNull: true,
           validate: {
-            isUrl: {
-              msg: "La imagen debe ser una URL válida",
+            isValidImageUrl(value) {
+              // Permitir null/vacío si no se manda imagen
+              if (value == null || value === "") return;
+
+              const trimmed = value.trim();
+
+              // Validación sencilla: debe empezar con http/https y no tener espacios
+              const urlRegex = /^https?:\/\/\S+$/;
+
+              if (!urlRegex.test(trimmed)) {
+                throw new Error("La imagen debe ser una URL válida");
+              }
             },
           },
         },

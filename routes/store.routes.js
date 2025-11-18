@@ -1,4 +1,3 @@
-// src/routes/store.routes.js
 const express = require("express");
 const router = express.Router();
 
@@ -8,6 +7,7 @@ const orderController = require("../controllers/orderController");
 
 // TODO: implementar estos middlewares
 const { authMiddleware, adminMiddleware } = require("../middlewares/auth");
+const { upload } = require("../middlewares/uploadImage");
 
 /* ==========
  * PUBLIC - STORE
@@ -43,7 +43,13 @@ router.post("/orders", authMiddleware, orderController.createOrderFromPayload);
  * ========== */
 
 // CRUD de productos
-router.post("/admin/products", authMiddleware, adminMiddleware, storeController.createProduct);
+router.post(
+  "/admin/products",
+  authMiddleware,
+  adminMiddleware,
+  upload.single("image"),
+  storeController.createProduct,
+);
 
 router.put("/admin/products/:id", authMiddleware, adminMiddleware, storeController.updateProduct);
 

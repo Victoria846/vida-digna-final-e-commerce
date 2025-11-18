@@ -29,10 +29,13 @@ app.use(
   }),
 );
 
+app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
+
 /* =============================
  * EXPRESS CONFIG
  * ============================= */
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 /* =============================
