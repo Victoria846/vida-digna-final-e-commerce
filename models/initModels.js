@@ -1,5 +1,3 @@
-// models/initModels.js
-
 const Admin = require("./User/Admin");
 const User = require("./User/User");
 const UserProfile = require("./User/UserProfile");
@@ -43,8 +41,6 @@ function initModels(sequelize) {
   models.BlogPost = BlogPost.initModel(sequelize);
   models.Guide = Guide.initModel(sequelize);
   models.Video = Video.initModel(sequelize);
-
-  // Associations (como ya habíamos hablado)
 
   // Store
   models.Product.belongsTo(models.ProductCategory, {

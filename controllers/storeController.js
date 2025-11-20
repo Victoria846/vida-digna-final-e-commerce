@@ -1,4 +1,3 @@
-// src/controllers/storeController.js
 const { Op } = require("sequelize");
 
 const storeController = {
@@ -98,72 +97,12 @@ const storeController = {
       const models = req.app.get("models");
       const { Product } = models;
 
-      console.log("[createProduct] BODY:", req.body);
-      console.log("[createProduct] FILE:", req.file);
-
-      const { name, description, price, stock, category_id } = req.body;
-
-      if (!name) {
-        return res.status(400).json({ message: "Debe enviar el nombre del producto" });
-      }
-
-      // Parseo seguro de precio (viene como string desde el form)
-      let parsedPrice = null;
-      if (price !== undefined && price !== null && price !== "") {
-        parsedPrice = Number(price);
-        if (Number.isNaN(parsedPrice)) {
-          return res.status(400).json({ message: "Precio inválido" });
-        }
-      }
-
-      const parsedStock = stock !== undefined && stock !== null && stock !== "" ? Number(stock) : 0;
-
-      const parsedCategoryId =
-        category_id !== undefined && category_id !== null && category_id !== ""
-          ? Number(category_id)
-          : null;
-
-      let image_url = null;
-
-      // Si subieron archivo, armamos la URL pública
-      if (req.file) {
-        const baseUrl = `${req.protocol}://${req.get("host")}`;
-        image_url = `${baseUrl}/uploads/${req.file.filename}`;
-      } else if (req.body.image_url) {
-        // También permitimos una URL directa en vez de archivo
-        image_url = req.body.image_url;
-      }
-
-      const product = await Product.create({
-        name,
-        description,
-        price: parsedPrice,
-        stock: parsedStock,
-        category_id: parsedCategoryId,
-        image_url,
-        status: "active",
-      });
-
-      return res.status(201).json({
-        message: "Producto creado correctamente",
-        product,
-      });
-    } catch (error) {
-      console.error("Error createProduct:", error);
-      return res.status(500).json({ message: "Error al crear producto" });
-    }
-  },
-
-  async createProduct(req, res) {
-    try {
-      const models = req.app.get("models");
-      const { Product } = models;
-
       console.log("[createProduct] CONTENT-TYPE:", req.headers["content-type"]);
       console.log("[createProduct] BODY:", req.body);
       console.log("[createProduct] FILE:", req.file);
 
-      const { name, description, price, stock, category_id } = req.body;
+      const { name, description, short_description, price, stock, category_id, features } =
+        req.body;
 
       if (!name) {
         return res.status(400).json({ message: "Debe enviar el nombre del producto" });
@@ -185,7 +124,6 @@ const storeController = {
           : null;
 
       let image_url = null;
-
       if (req.file) {
         const baseUrl = `${req.protocol}://${req.get("host")}`;
         image_url = `${baseUrl}/uploads/${req.file.filename}`;
@@ -193,13 +131,26 @@ const storeController = {
         image_url = req.body.image_url;
       }
 
+      let parsedFeatures = [];
+      if (features) {
+        if (Array.isArray(features)) {
+          parsedFeatures = features;
+        } else if (typeof features === "string") {
+          parsedFeatures = features
+            .split(";")
+            .map((f) => f.trim())
+            .filter((f) => f.length > 0);
+        }
+      }
+
       const product = await Product.create({
         name,
         description,
-        price: parsedPrice,
+        short_description,
         stock: parsedStock,
         category_id: parsedCategoryId,
         image_url,
+        features: parsedFeatures,
         status: "active",
       });
 

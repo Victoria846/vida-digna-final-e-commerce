@@ -50,13 +50,11 @@ class Product extends Model {
           allowNull: true,
           validate: {
             isValidImageUrl(value) {
-              // Permitir null/vacío si no se manda imagen
               if (value == null || value === "") return;
 
               const trimmed = value.trim();
 
-              // Validación sencilla: debe empezar con http/https y no tener espacios
-              const urlRegex = /^https?:\/\/\S+$/;
+              const urlRegex = /^(https?:\/\/\S+|\/\S+)$/;
 
               if (!urlRegex.test(trimmed)) {
                 throw new Error("La imagen debe ser una URL válida");
@@ -64,6 +62,20 @@ class Product extends Model {
             },
           },
         },
+        description: {
+          type: DataTypes.TEXT,
+          allowNull: true,
+        },
+        short_description: {
+          type: DataTypes.STRING(255),
+          allowNull: true,
+        },
+        features: {
+          type: DataTypes.JSON,
+          allowNull: false,
+          defaultValue: [],
+        },
+
         category_id: {
           type: DataTypes.BIGINT.UNSIGNED,
           allowNull: false,

@@ -24,7 +24,6 @@ const app = express();
 app.use(
   cors({
     origin: (origin, callback) => {
-      // origin puede ser undefined en herramientas tipo Postman
       if (!origin || allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
